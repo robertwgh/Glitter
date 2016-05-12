@@ -55,11 +55,19 @@ source_group("Vendors" FILES ${VENDORS_SOURCES})
 
 add_definitions(-DGLFW_INCLUDE_NONE
                 -DPROJECT_SOURCE_DIR=\"${PROJECT_SOURCE_DIR}\")
-add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} ${PROJECT_HEADERS}
+
+
+# To add new tests, just add the project name here. 
+set(APP_LIST main main2 ex5.1 ex5.2)
+
+foreach (APP ${APP_LIST})
+	file(GLOB SOURCE_FILE Glitter/Sources/${APP}.cpp)
+	add_executable(${APP} ${SOURCE_FILE} ${PROJECT_HEADERS}
                                ${PROJECT_SHADERS} ${PROJECT_CONFIGS}
                                ${VENDORS_SOURCES})
-target_link_libraries(${PROJECT_NAME} assimp glfw
-                      ${GLFW_LIBRARIES} ${GLAD_LIBRARIES}
-                      BulletDynamics BulletCollision LinearMath)
-set_target_properties(${PROJECT_NAME} PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${PROJECT_NAME})
+	target_link_libraries(${APP} assimp glfw
+                      		${GLFW_LIBRARIES} ${GLAD_LIBRARIES}
+                      		BulletDynamics BulletCollision LinearMath)
+	set_target_properties(${APP} PROPERTIES
+    		RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+ENDFOREACH(APP)
