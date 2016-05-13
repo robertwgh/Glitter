@@ -2,6 +2,7 @@
 #define LEARN_GL_HPP
 
 #include "glitter.hpp"
+#include "program.hpp"
 #include <cstdlib>
 #include <iostream>
 #include <sstream>

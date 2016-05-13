@@ -1,7 +1,8 @@
-// Chapter 5
-// Hello Triangle Program.
+// Chapter 6
+// Hello Triangle Program. 
+// Three colors for three vertices. 
 
-#include <learngl.hpp>
+#include "learngl.hpp"
 
 void key_callback(GLFWwindow * window, int key, int scancode, int action, int mode)
 {
@@ -61,19 +62,23 @@ GLFWwindow * initTest(int width, int height)
 
 const GLchar * vsSource = STRINGIZE_SOURCE(
     \#version 330 core \n
-    layout(location = 0) in vec3 position;
+    layout (location = 0) in vec3 position;
+    layout (location = 1) in vec3 inColor;
+    out vec3 myColor;
     void main()
     {
         gl_Position = vec4(position.xyz, 1.0f);
+        myColor = inColor;
     }
 );
 
 const GLchar * fsSource = STRINGIZE_SOURCE(
     \#version 330 core \n
     out vec4 color;
+    in vec3 myColor;
     void main()
     {
-        color = vec4(1.0f, 0.5f, 0.2f, 0.1f);
+        color = vec4(myColor, 1.0f);
     }
 );
  
@@ -124,9 +129,9 @@ int main()
  
     //Prepare data
     GLfloat triangle[] = {
-        -0.5f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        0.0f, 0.5f, 0.0f
+        -0.5f, -0.5f, 0.0f, /* coordinate*/ 1.0f, 0.0f, 0.0f, /* color */
+        0.5f, -0.5f, 0.0f,                  0.0f, 1.0f, 0.0f,
+        0.0f, 0.5f, 0.0f,                   0.0f, 0.0f, 1.0f
     };
  
     GLuint vbo, vao;
@@ -139,11 +144,16 @@ int main()
         glBufferData(GL_ARRAY_BUFFER, sizeof(triangle), triangle, GL_STATIC_DRAW);
         
         GLint posAttribPtrLoc = glGetAttribLocation(program, "position");
-        glVertexAttribPointer(posAttribPtrLoc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+        glVertexAttribPointer(posAttribPtrLoc, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
         glEnableVertexAttribArray(posAttribPtrLoc);
+        
+        GLint colorAttribPtrLoc = glGetAttribLocation(program, "inColor");
+        glVertexAttribPointer(colorAttribPtrLoc, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(colorAttribPtrLoc);
     }
     glBindVertexArray(0);
     
+    //GLint colorUniform = glGetUniformLocation(program, "myColor");
     glUseProgram(program);
     
     // Create a game loop.
@@ -156,6 +166,9 @@ int main()
         // Rendering
         glClearColor(0.80f, 0.80f, 0.80f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+        
+        //GLfloat greenColor = sin(glfwGetTime()) / 2.0f + 0.5f;
+        //glUniform4f(colorUniform, 0.0f, greenColor, 0.0f, 1.0f);
         
         glBindVertexArray(vao);
         glDrawArrays(GL_TRIANGLES, 0, 3);

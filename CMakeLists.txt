@@ -59,16 +59,17 @@ add_definitions(-DGLFW_INCLUDE_NONE
 
 
 # To add new tests, just add the project name here. 
-set(APP_LIST code5.1 code5.2 ex5.8.1 ex5.8.2 ex5.8.3)
+set(APP_LIST code5.1 code5.2 ex5.8.1 ex5.8.2 ex5.8.3 
+             code6.1 code6.2 code6.3)
 
 foreach (APP ${APP_LIST})
-	file(GLOB SOURCE_FILE Glitter/Sources/${APP}.cpp)
-	add_executable(${APP} ${SOURCE_FILE} ${PROJECT_HEADERS}
+    file(GLOB SOURCE_FILE Glitter/Sources/${APP}.cpp)
+    add_executable(${APP} ${SOURCE_FILE} ${PROJECT_HEADERS}
                                ${PROJECT_SHADERS} ${PROJECT_CONFIGS}
                                ${VENDORS_SOURCES})
-	target_link_libraries(${APP} assimp glfw
-                      		${GLFW_LIBRARIES} ${GLAD_LIBRARIES}
-                      		BulletDynamics BulletCollision LinearMath)
-	set_target_properties(${APP} PROPERTIES
-    		RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+    target_link_libraries(${APP} assimp glfw
+                            ${GLFW_LIBRARIES} ${GLAD_LIBRARIES}
+                            BulletDynamics BulletCollision LinearMath)
+    set_target_properties(${APP} PROPERTIES
+            RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 ENDFOREACH(APP)

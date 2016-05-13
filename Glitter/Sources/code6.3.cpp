@@ -1,7 +1,9 @@
-// Chapter 5
-// Hello Triangle Program.
+// Chapter 6
+// Hello Triangle Program. 
+// Three colors for three vertices. 
+// Use the customized Program Class.
 
-#include <learngl.hpp>
+#include "learngl.hpp"
 
 void key_callback(GLFWwindow * window, int key, int scancode, int action, int mode)
 {
@@ -61,74 +63,38 @@ GLFWwindow * initTest(int width, int height)
 
 const GLchar * vsSource = STRINGIZE_SOURCE(
     \#version 330 core \n
-    layout(location = 0) in vec3 position;
+    layout (location = 0) in vec3 position;
+    layout (location = 1) in vec3 inColor;
+    out vec3 myColor;
     void main()
     {
         gl_Position = vec4(position.xyz, 1.0f);
+        myColor = inColor;
     }
 );
 
 const GLchar * fsSource = STRINGIZE_SOURCE(
     \#version 330 core \n
     out vec4 color;
+    in vec3 myColor;
     void main()
     {
-        color = vec4(1.0f, 0.5f, 0.2f, 0.1f);
+        color = vec4(myColor, 1.0f);
     }
 );
  
 int main()
 {
     GLFWwindow * window = initTest(800, 600);
-    
-    // Compile vertex shader
-    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vsSource, NULL);
-    glCompileShader(vertexShader);
-    GLint err;
-    GLchar errLog[512];
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &err);
-    if (!err)
-    {
-            glGetShaderInfoLog(vertexShader, 512, NULL, errLog);
-            std::cout << "Vertex shader compile failed. Error log: " << errLog << std::endl;
-            return -1;
-    }
- 
-    // Compiler fragment shader
-    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fsSource, NULL);
-    glCompileShader(fragmentShader);
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &err);
-    if (!err)
-    {
-            glGetShaderInfoLog(fragmentShader, 512, NULL, errLog);
-            std::cout << "Fragment shader compile filed. Error log: " << errLog << std::endl;
-            return -1;
-    }
- 
-    // Create program
-    GLuint program = glCreateProgram();
-    glAttachShader(program, vertexShader);
-    glAttachShader(program, fragmentShader);
-    glLinkProgram(program);
-    glGetProgramiv(program, GL_LINK_STATUS, &err);
-    if (!err)
-    {
-            glGetProgramInfoLog(program, 512, NULL, errLog);
-            std::cout << "Link program failed, error log: " << errLog << std::endl;
-            return -1;
-    }
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
+    ogl::Program program(vsSource, fsSource, ogl::Program::STRING_MODE);
  
     //Prepare data
     GLfloat triangle[] = {
-        -0.5f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        0.0f, 0.5f, 0.0f
+        -0.5f, -0.5f, 0.0f, /* coordinate*/ 1.0f, 0.0f, 0.0f, /* color */
+        0.5f, -0.5f, 0.0f,                  0.0f, 1.0f, 0.0f,
+        0.0f, 0.5f, 0.0f,                   0.0f, 0.0f, 1.0f
     };
- 
+    
     GLuint vbo, vao;
     glGenVertexArrays(1, &vao);
     glGenBuffers(1, &vbo);
@@ -138,13 +104,17 @@ int main()
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glBufferData(GL_ARRAY_BUFFER, sizeof(triangle), triangle, GL_STATIC_DRAW);
         
-        GLint posAttribPtrLoc = glGetAttribLocation(program, "position");
-        glVertexAttribPointer(posAttribPtrLoc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+        GLint posAttribPtrLoc = program.getAttribLocation("position"); //glGetAttribLocation(program, "position");
+        glVertexAttribPointer(posAttribPtrLoc, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
         glEnableVertexAttribArray(posAttribPtrLoc);
+        
+        GLint colorAttribPtrLoc = program.getAttribLocation("inColor"); //glGetAttribLocation(program, "inColor");
+        glVertexAttribPointer(colorAttribPtrLoc, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(colorAttribPtrLoc);
     }
     glBindVertexArray(0);
     
-    glUseProgram(program);
+    program.use();
     
     // Create a game loop.
     double lastTime = glfwGetTime();

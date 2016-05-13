@@ -1,7 +1,8 @@
-// Chapter 5
-// Hello Triangle Program.
+// Chapter 6
+// Hello Triangle Program. 
+// With color changing fragment shader. Use uniform.
 
-#include <learngl.hpp>
+#include "learngl.hpp"
 
 void key_callback(GLFWwindow * window, int key, int scancode, int action, int mode)
 {
@@ -71,9 +72,10 @@ const GLchar * vsSource = STRINGIZE_SOURCE(
 const GLchar * fsSource = STRINGIZE_SOURCE(
     \#version 330 core \n
     out vec4 color;
+    uniform vec4 myColor;
     void main()
     {
-        color = vec4(1.0f, 0.5f, 0.2f, 0.1f);
+        color = myColor;
     }
 );
  
@@ -144,6 +146,7 @@ int main()
     }
     glBindVertexArray(0);
     
+    GLint colorUniform = glGetUniformLocation(program, "myColor");
     glUseProgram(program);
     
     // Create a game loop.
@@ -156,6 +159,9 @@ int main()
         // Rendering
         glClearColor(0.80f, 0.80f, 0.80f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+        
+        GLfloat greenColor = sin(glfwGetTime()) / 2.0f + 0.5f;
+        glUniform4f(colorUniform, 0.0f, greenColor, 0.0f, 1.0f);
         
         glBindVertexArray(vao);
         glDrawArrays(GL_TRIANGLES, 0, 3);

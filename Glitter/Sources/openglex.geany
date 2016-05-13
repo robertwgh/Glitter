@@ -28,13 +28,15 @@ long_line_behaviour=1
 long_line_column=80
 
 [files]
-current_page=5
+current_page=4
 FILE_NAME_0=0;None;0;EUTF-8;0;1;0;%2Fhome%2Fkn%2Fworkspace%2FGlitter%2FGlitter%2FSources%2Fopenglex.geany;0;4
-FILE_NAME_1=0;C++;0;EUTF-8;0;1;0;%2Fhome%2Fkn%2Fworkspace%2FGlitter%2FGlitter%2FSources%2Fmain2.cpp;0;4
-FILE_NAME_2=0;C++;0;EUTF-8;0;1;0;%2Fhome%2Fkn%2Fworkspace%2FGlitter%2FGlitter%2FSources%2Fmain.cpp;0;4
-FILE_NAME_3=3820;C++;0;EUTF-8;0;1;0;%2Fhome%2Fkn%2Fworkspace%2FGlitter%2FGlitter%2FSources%2Fex5.2.cpp;0;4
-FILE_NAME_4=0;C++;0;EUTF-8;0;1;0;%2Fhome%2Fkn%2Fworkspace%2FGlitter%2FGlitter%2FSources%2Fex5.1.cpp;0;4
-FILE_NAME_5=239;C++;0;EUTF-8;0;1;0;%2Fhome%2Fkn%2Fworkspace%2Frobertwgh%2FGlitter%2FGlitter%2FSources%2Fmain.cpp;0;4
+FILE_NAME_1=0;C++;0;EUTF-8;0;1;0;%2Fhome%2Fkn%2Fworkspace%2Frobertwgh%2FGlitter%2FGlitter%2FSources%2Fex5.8.3.cpp;0;4
+FILE_NAME_2=0;C++;0;EUTF-8;0;1;0;%2Fhome%2Fkn%2Fworkspace%2Frobertwgh%2FGlitter%2FGlitter%2FSources%2Fex5.8.2.cpp;0;4
+FILE_NAME_3=0;C++;0;EUTF-8;0;1;0;%2Fhome%2Fkn%2Fworkspace%2Frobertwgh%2FGlitter%2FGlitter%2FSources%2Fex5.8.1.cpp;0;4
+FILE_NAME_4=102;C++;0;EUTF-8;0;1;0;%2Fhome%2Fkn%2Fworkspace%2Frobertwgh%2FGlitter%2FGlitter%2FSources%2Fcode6.2.cpp;0;4
+FILE_NAME_5=0;C++;0;EUTF-8;0;1;0;%2Fhome%2Fkn%2Fworkspace%2Frobertwgh%2FGlitter%2FGlitter%2FSources%2Fcode5.2.cpp;0;4
+FILE_NAME_6=64;C++;0;EUTF-8;0;1;0;%2Fhome%2Fkn%2Fworkspace%2Frobertwgh%2FGlitter%2FGlitter%2FSources%2Fcode5.1.cpp;0;4
+FILE_NAME_7=2090;CMake;0;EUTF-8;0;1;0;%2Fhome%2Fkn%2Fworkspace%2Frobertwgh%2FGlitter%2FCMakeLists.txt;0;4
 
 [build-menu]
 EX_00_LB=_Execute
@@ -43,10 +45,16 @@ EX_00_WD=
 C++FT_01_LB=_Build
 C++FT_01_CM=cd ../../build && make
 C++FT_01_WD=
-filetypes=C++;
+filetypes=C++;CMake;
 C++FT_00_LB=_Compile
 C++FT_00_CM=cd ../../build && make
 C++FT_00_WD=
 C++FT_02_LB=_Lint
 C++FT_02_CM=cppcheck --language=c++ --enable=warning,style --template=gcc "%f"
 C++FT_02_WD=
+CMakeFT_00_LB=cmake
+CMakeFT_00_CM=cmake ..
+CMakeFT_00_WD=
+NF_03_LB=cmake
+NF_03_CM=cmake ..
+NF_03_WD=./
