@@ -6,6 +6,8 @@
 #include <iostream>
 #include <sstream>
 
+#define STRINGIZE_SOURCE(...) #__VA_ARGS__
+
 void key_callback(GLFWwindow * window, int key, int scancode, int action, int mode)
 {
     if(key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
@@ -62,21 +64,23 @@ GLFWwindow * initTest(int width, int height)
     return window;
 }
 
+const GLchar * vsSource = STRINGIZE_SOURCE(
+    #version 330 core \n
+    layout(location = 0) in vec3 position;
+    void main()
+    {
+        gl_Position = vec4(position.x, position.y, position.z, 1.0f);
+    }
+);
 
-const GLchar * vsSource = "#version 330 core\n"
-    "layout (location = 0) in vec3 position;\n"
-    "void main()\n"
-    "{\n"
-    "      gl_Position = vec4(position.x, position.y, position.z, 1.0f);\n"
-    "}\n\0";
- 
-const GLchar * fsSource = "#version 330 core\n"
-    "out vec4 color;\n"
-    "void main()\n"
-    "{\n"
-    "      color = vec4(0.0f, 0.5f, 0.0f, 1.0f);\n"
-    "}\n\0";
- 
+const GLchar * fsSource = STRINGIZE_SOURCE(
+    #version 330 core \n
+    out vec4 color;
+    void main()
+    {
+    	color = vec4(1.0f, 0.5f, 0.2f, 0.1f);
+    }
+);
  
 int main()
 {
