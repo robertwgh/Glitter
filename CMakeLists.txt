@@ -27,6 +27,7 @@ else()
     endif()
 endif()
 
+include_directories(Glitter/Headers/)
 include_directories(Glitter/Headers/
                     Glitter/Vendor/assimp/include/
                     Glitter/Vendor/bullet/src/
@@ -58,7 +59,7 @@ add_definitions(-DGLFW_INCLUDE_NONE
 
 
 # To add new tests, just add the project name here. 
-set(APP_LIST main main2 ex5.1 ex5.2)
+set(APP_LIST code5.1 code5.2 ex5.8.1 ex5.8.2 ex5.8.3)
 
 foreach (APP ${APP_LIST})
 	file(GLOB SOURCE_FILE Glitter/Sources/${APP}.cpp)

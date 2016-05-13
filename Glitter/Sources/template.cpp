@@ -1,7 +1,6 @@
-#include "glitter.hpp"
-#include <cstdlib>
-#include <iostream>
-#include <sstream>
+// Template code to set up window and OpenGL environment. 
+
+#include "learn_gl.hpp"
 
 void key_callback(GLFWwindow * window, int key, int scancode, int action, int mode)
 {
@@ -75,7 +74,6 @@ int main()
         // Rendering
         glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-        
         
         // Finish rendering
         glfwSwapBuffers(window);

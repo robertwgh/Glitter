@@ -1,10 +1,7 @@
 // Chapter 5
-// Element buffer objects
+// Hello Triangle Program.
 
-#include "glitter.hpp"
-#include <cstdlib>
-#include <iostream>
-#include <sstream>
+#include "learn_gl.hpp"
 
 void key_callback(GLFWwindow * window, int key, int scancode, int action, int mode)
 {
@@ -62,21 +59,23 @@ GLFWwindow * initTest(int width, int height)
     return window;
 }
 
+const GLchar * vsSource = STRINGIZE_SOURCE(
+    #version 330 core \n
+    layout(location = 0) in vec3 position;
+    void main()
+    {
+        gl_Position = vec4(position.x, position.y, position.z, 1.0f);
+    }
+);
 
-const GLchar * vsSource = "#version 330 core\n"
-    "layout (location = 0) in vec3 position;\n"
-    "void main()\n"
-    "{\n"
-    "      gl_Position = vec4(position.x, position.y, position.z, 1.0f);\n"
-    "}\n\0";
- 
-const GLchar * fsSource = "#version 330 core\n"
-    "out vec4 color;\n"
-    "void main()\n"
-    "{\n"
-    "      color = vec4(0.0f, 0.5f, 0.0f, 1.0f);\n"
-    "}\n\0";
- 
+const GLchar * fsSource = STRINGIZE_SOURCE(
+    #version 330 core \n
+    out vec4 color;
+    void main()
+    {
+        color = vec4(1.0f, 0.5f, 0.2f, 0.1f);
+    }
+);
  
 int main()
 {
@@ -124,30 +123,20 @@ int main()
     glDeleteShader(fragmentShader);
  
     //Prepare data
-    GLfloat vertices[] = {
-        -0.5f, -0.5f, 0.0f, // bottom left
-        0.5f, -0.5f, 0.0f, // bottom right
-        0.5f, 0.5f, 0.0f,  // top right
-        -0.5f, 0.5f, 0.0f // top left
-    };
-    
-    GLuint indices [] = {
-        0, 1, 2, 
-        0, 2, 3
+    GLfloat triangle[] = {
+        -0.5f, -0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f,
+        0.0f, 0.5f, 0.0f
     };
  
-    GLuint vbo, ebo, vao;
+    GLuint vbo, vao;
     glGenVertexArrays(1, &vao);
     glGenBuffers(1, &vbo);
-    glGenBuffers(1, &ebo);
  
     glBindVertexArray(vao);
     {
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-        
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(triangle), triangle, GL_STATIC_DRAW);
         
         GLint posAttribPtrLoc = glGetAttribLocation(program, "position");
         glVertexAttribPointer(posAttribPtrLoc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
@@ -156,9 +145,6 @@ int main()
     glBindVertexArray(0);
     
     glUseProgram(program);
-    
-    // Wireframe mode.
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     
     // Create a game loop.
     double lastTime = glfwGetTime();
@@ -172,7 +158,7 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
         
         glBindVertexArray(vao);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (GLvoid*)0);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
         glBindVertexArray(0);
               
         // Finish rendering

@@ -28,8 +28,13 @@ long_line_behaviour=1
 long_line_column=80
 
 [files]
-current_page=0
-FILE_NAME_0=4526;C++;0;EUTF-8;0;1;0;%2Fhome%2Fkn%2Fworkspace%2FGlitter%2FGlitter%2FSources%2Fex1.cpp;0;4
+current_page=5
+FILE_NAME_0=0;None;0;EUTF-8;0;1;0;%2Fhome%2Fkn%2Fworkspace%2FGlitter%2FGlitter%2FSources%2Fopenglex.geany;0;4
+FILE_NAME_1=0;C++;0;EUTF-8;0;1;0;%2Fhome%2Fkn%2Fworkspace%2FGlitter%2FGlitter%2FSources%2Fmain2.cpp;0;4
+FILE_NAME_2=0;C++;0;EUTF-8;0;1;0;%2Fhome%2Fkn%2Fworkspace%2FGlitter%2FGlitter%2FSources%2Fmain.cpp;0;4
+FILE_NAME_3=3820;C++;0;EUTF-8;0;1;0;%2Fhome%2Fkn%2Fworkspace%2FGlitter%2FGlitter%2FSources%2Fex5.2.cpp;0;4
+FILE_NAME_4=0;C++;0;EUTF-8;0;1;0;%2Fhome%2Fkn%2Fworkspace%2FGlitter%2FGlitter%2FSources%2Fex5.1.cpp;0;4
+FILE_NAME_5=239;C++;0;EUTF-8;0;1;0;%2Fhome%2Fkn%2Fworkspace%2Frobertwgh%2FGlitter%2FGlitter%2FSources%2Fmain.cpp;0;4
 
 [build-menu]
 EX_00_LB=_Execute

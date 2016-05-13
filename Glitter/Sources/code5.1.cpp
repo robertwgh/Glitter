@@ -1,16 +1,11 @@
 // Chapter 5
-// Two triangles.
+// Hello Triangle Program.
 
-#include "glitter.hpp"
-#include <cstdlib>
-#include <iostream>
-#include <sstream>
-
-#define STRINGIZE_SOURCE(...) #__VA_ARGS__
+#include <learngl.hpp>
 
 void key_callback(GLFWwindow * window, int key, int scancode, int action, int mode)
 {
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
+    if(key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
         glfwSetWindowShouldClose(window, GL_TRUE);
 }
 
@@ -18,11 +13,11 @@ void showFPS(GLFWwindow * window, double & lastTime, int & frame)
 {
     double currentTime = glfwGetTime();
     double time = currentTime - lastTime;
-    frame++;
-    if (time >= 0.5)
+    frame ++;
+    if(time >= 0.5)
     {
         std::stringstream ss;
-        ss << "Robert learns OpenGL.  FPS " << 1.0f / time * frame;
+        ss << "Robert learns OpenGL.  FPS "<< 1.0f / time * frame;
         frame = 0;
         lastTime = currentTime;
         glfwSetWindowTitle(window, ss.str().c_str());
@@ -38,54 +33,54 @@ GLFWwindow * initTest(int width, int height)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-
+    
     GLFWwindow * window = glfwCreateWindow(width, height, "Robert learns OpenGL", nullptr, nullptr);
-    if (window == nullptr)
+    if(window == nullptr)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
         return nullptr;
     }
-
+    
     glfwMakeContextCurrent(window);
     glfwSetKeyCallback(window, key_callback);
-
+    
     // Glad library init.
-    if (!gladLoadGL()) {
+    if(!gladLoadGL()) {
         std::cout << "Something went wrong!" << std::endl;
         return nullptr;
     }
-
+    
     // Print OpenGL version.
     std::cout << "OpenGL version " << GLVersion.major << "." << GLVersion.minor << std::endl;
     // Set Viewport.
     glViewport(0, 0, width, height);
-
+    
     return window;
 }
 
 const GLchar * vsSource = STRINGIZE_SOURCE(
-    #version 330 core \n
+    \#version 330 core \n
     layout(location = 0) in vec3 position;
-void main()
-{
-    gl_Position = vec4(position.x, position.y, position.z, 1.0f);
-}
+    void main()
+    {
+        gl_Position = vec4(position.x, position.y, position.z, 1.0f);
+    }
 );
 
 const GLchar * fsSource = STRINGIZE_SOURCE(
-    #version 330 core \n
+    \#version 330 core \n
     out vec4 color;
-void main()
-{
-    color = vec4(1.0f, 0.5f, 0.2f, 0.1f);
-}
+    void main()
+    {
+        color = vec4(1.0f, 0.5f, 0.2f, 0.1f);
+    }
 );
-
+ 
 int main()
 {
     GLFWwindow * window = initTest(800, 600);
-
+    
     // Compile vertex shader
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vsSource, NULL);
@@ -95,11 +90,11 @@ int main()
     glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &err);
     if (!err)
     {
-        glGetShaderInfoLog(vertexShader, 512, NULL, errLog);
-        std::cout << "Vertex shader compile failed. Error log: " << errLog << std::endl;
-        return -1;
+            glGetShaderInfoLog(vertexShader, 512, NULL, errLog);
+            std::cout << "Vertex shader compile failed. Error log: " << errLog << std::endl;
+            return -1;
     }
-
+ 
     // Compiler fragment shader
     GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragmentShader, 1, &fsSource, NULL);
@@ -107,11 +102,11 @@ int main()
     glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &err);
     if (!err)
     {
-        glGetShaderInfoLog(fragmentShader, 512, NULL, errLog);
-        std::cout << "Fragment shader compile filed. Error log: " << errLog << std::endl;
-        return -1;
+            glGetShaderInfoLog(fragmentShader, 512, NULL, errLog);
+            std::cout << "Fragment shader compile filed. Error log: " << errLog << std::endl;
+            return -1;
     }
-
+ 
     // Create program
     GLuint program = glCreateProgram();
     glAttachShader(program, vertexShader);
@@ -120,62 +115,58 @@ int main()
     glGetProgramiv(program, GL_LINK_STATUS, &err);
     if (!err)
     {
-        glGetProgramInfoLog(program, 512, NULL, errLog);
-        std::cout << "Link program failed, error log: " << errLog << std::endl;
-        return -1;
+            glGetProgramInfoLog(program, 512, NULL, errLog);
+            std::cout << "Link program failed, error log: " << errLog << std::endl;
+            return -1;
     }
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
-
+ 
     //Prepare data
-    GLfloat vertices[] = {
-        -0.5f, 0.0f, 0.0f,
-        0.0f, 0.0f, 0.0f,
-        -0.25f, 0.25f, 0.0f,
-        0.0f, -0.0f, 0.0f,
-        0.5f, 0.0f, 0.0f,
-        0.25f, 0.25f, 0.0f
+    GLfloat triangle[] = {
+        -0.5f, -0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f,
+        0.0f, 0.5f, 0.0f
     };
-
+ 
     GLuint vbo, vao;
     glGenVertexArrays(1, &vao);
     glGenBuffers(1, &vbo);
-
+ 
     glBindVertexArray(vao);
     {
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
+        glBufferData(GL_ARRAY_BUFFER, sizeof(triangle), triangle, GL_STATIC_DRAW);
+        
         GLint posAttribPtrLoc = glGetAttribLocation(program, "position");
         glVertexAttribPointer(posAttribPtrLoc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
         glEnableVertexAttribArray(posAttribPtrLoc);
     }
     glBindVertexArray(0);
-
+    
     glUseProgram(program);
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
+    
     // Create a game loop.
     double lastTime = glfwGetTime();
     int frame = 0;
-    while (!glfwWindowShouldClose(window))
+    while(!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
-
+        
         // Rendering
         glClearColor(0.80f, 0.80f, 0.80f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-
+        
         glBindVertexArray(vao);
-        glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices)/sizeof(GLfloat)/3);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
         glBindVertexArray(0);
-
+              
         // Finish rendering
         glfwSwapBuffers(window);
         showFPS(window, lastTime, frame);
     }
-
-    glDeleteBuffers(1, &vbo);
+    
+    glDeleteBuffers(1, &vbo); 
     glfwTerminate();
     return 0;
 }

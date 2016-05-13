@@ -3,12 +3,7 @@
 // Chapter 5
 // Hello Triangle Program.
 
-#include "glitter.hpp"
-#include <cstdlib>
-#include <iostream>
-#include <sstream>
-
-#define STRINGIZE_SOURCE(...) #__VA_ARGS__
+#include "learngl.hpp"
 
 void key_callback(GLFWwindow * window, int key, int scancode, int action, int mode)
 {
@@ -67,7 +62,7 @@ GLFWwindow * initTest(int width, int height)
 }
 
 const GLchar * vsSource = STRINGIZE_SOURCE(
-    #version 330 core \n
+    \#version 330 core \n
     layout(location = 0) in vec3 position;
 void main()
 {
@@ -76,7 +71,7 @@ void main()
 );
 
 const GLchar * fsSource = STRINGIZE_SOURCE(
-    #version 330 core \n
+    \#version 330 core \n
     out vec4 color;
 void main()
 {
@@ -85,7 +80,7 @@ void main()
 );
 
 const GLchar * fsSource2 = STRINGIZE_SOURCE(
-    #version 330 core \n
+    \#version 330 core \n
     out vec4 color;
 void main()
 {

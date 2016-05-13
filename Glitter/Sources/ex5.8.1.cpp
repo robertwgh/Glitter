@@ -1,13 +1,7 @@
-// Two vbos and vaos for seperate triangles
 // Chapter 5
-// Hello Triangle Program.
+// Two triangles use one VBO.
 
-#include "glitter.hpp"
-#include <cstdlib>
-#include <iostream>
-#include <sstream>
-
-#define STRINGIZE_SOURCE(...) #__VA_ARGS__
+#include "learngl.hpp"
 
 void key_callback(GLFWwindow * window, int key, int scancode, int action, int mode)
 {
@@ -66,7 +60,7 @@ GLFWwindow * initTest(int width, int height)
 }
 
 const GLchar * vsSource = STRINGIZE_SOURCE(
-    #version 330 core \n
+    \#version 330 core \n
     layout(location = 0) in vec3 position;
 void main()
 {
@@ -75,7 +69,7 @@ void main()
 );
 
 const GLchar * fsSource = STRINGIZE_SOURCE(
-    #version 330 core \n
+    \#version 330 core \n
     out vec4 color;
 void main()
 {
@@ -138,26 +132,17 @@ int main()
         0.25f, 0.25f, 0.0f
     };
 
-    GLuint vbo[2], vao[2];
-    glGenVertexArrays(2, vao);
-    glGenBuffers(2, vbo);
+    GLuint vbo, vao;
+    glGenVertexArrays(1, &vao);
+    glGenBuffers(1, &vbo);
 
-    glBindVertexArray(vao[0]);
+    glBindVertexArray(vao);
     {
-        glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
         GLint posAttribPtrLoc = glGetAttribLocation(program, "position");
         glVertexAttribPointer(posAttribPtrLoc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-        glEnableVertexAttribArray(posAttribPtrLoc);
-    }
-    glBindVertexArray(0);
-
-    glBindVertexArray(vao[1]);
-    {
-        glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-        GLint posAttribPtrLoc = glGetAttribLocation(program, "position");
-        glVertexAttribPointer(posAttribPtrLoc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)(sizeof(GLfloat) * 9));
         glEnableVertexAttribArray(posAttribPtrLoc);
     }
     glBindVertexArray(0);
@@ -176,11 +161,8 @@ int main()
         glClearColor(0.80f, 0.80f, 0.80f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glBindVertexArray(vao[0]);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-
-        glBindVertexArray(vao[1]);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glBindVertexArray(vao);
+        glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices)/sizeof(GLfloat)/3);
         glBindVertexArray(0);
 
         // Finish rendering
@@ -188,8 +170,7 @@ int main()
         showFPS(window, lastTime, frame);
     }
 
-    glDeleteBuffers(2, vbo);
-    glDeleteBuffers(2, vao);
+    glDeleteBuffers(1, &vbo);
     glfwTerminate();
     return 0;
 }
