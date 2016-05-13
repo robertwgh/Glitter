@@ -1,7 +1,5 @@
-// Two fragment shaders for two different colors
-
-// Chapter 5
-// Hello Triangle Program.
+// Chapter 5, ex5.1
+// Try to draw 2 triangles next to each other using glDrawArrays by adding more vertices to your data
 
 #include "learngl.hpp"
 
@@ -79,15 +77,6 @@ void main()
 }
 );
 
-const GLchar * fsSource2 = STRINGIZE_SOURCE(
-    \#version 330 core \n
-    out vec4 color;
-void main()
-{
-    color = vec4(1.0f, 1.0f, 0.0f, 0.1f);
-}
-);
-
 int main()
 {
     GLFWwindow * window = initTest(800, 600);
@@ -118,17 +107,6 @@ int main()
         return -1;
     }
 
-    GLuint fragmentShader2 = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader2, 1, &fsSource2, NULL);
-    glCompileShader(fragmentShader2);
-    glGetShaderiv(fragmentShader2, GL_COMPILE_STATUS, &err);
-    if (!err)
-    {
-        glGetShaderInfoLog(fragmentShader2, 512, NULL, errLog);
-        std::cout << "Fragment shader compile filed. Error log: " << errLog << std::endl;
-        return -1;
-    }
-
     // Create program
     GLuint program = glCreateProgram();
     glAttachShader(program, vertexShader);
@@ -141,23 +119,8 @@ int main()
         std::cout << "Link program failed, error log: " << errLog << std::endl;
         return -1;
     }
-
-    // Create program
-    GLuint program2 = glCreateProgram();
-    glAttachShader(program2, vertexShader);
-    glAttachShader(program2, fragmentShader2);
-    glLinkProgram(program2);
-    glGetProgramiv(program2, GL_LINK_STATUS, &err);
-    if (!err)
-    {
-        glGetProgramInfoLog(program2, 512, NULL, errLog);
-        std::cout << "Link program failed, error log: " << errLog << std::endl;
-        return -1;
-    }
-
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
-    glDeleteShader(fragmentShader2);
 
     //Prepare data
     GLfloat vertices[] = {
@@ -169,30 +132,22 @@ int main()
         0.25f, 0.25f, 0.0f
     };
 
-    GLuint vbo[2], vao[2];
-    glGenVertexArrays(2, vao);
-    glGenBuffers(2, vbo);
+    GLuint vbo, vao;
+    glGenVertexArrays(1, &vao);
+    glGenBuffers(1, &vbo);
 
-    glBindVertexArray(vao[0]);
+    glBindVertexArray(vao);
     {
-        glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
         GLint posAttribPtrLoc = glGetAttribLocation(program, "position");
         glVertexAttribPointer(posAttribPtrLoc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
         glEnableVertexAttribArray(posAttribPtrLoc);
     }
     glBindVertexArray(0);
 
-    glBindVertexArray(vao[1]);
-    {
-        glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-        GLint posAttribPtrLoc = glGetAttribLocation(program2, "position");
-        glVertexAttribPointer(posAttribPtrLoc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)(sizeof(GLfloat) * 9));
-        glEnableVertexAttribArray(posAttribPtrLoc);
-    }
-    glBindVertexArray(0);
-
+    glUseProgram(program);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     // Create a game loop.
@@ -206,13 +161,8 @@ int main()
         glClearColor(0.80f, 0.80f, 0.80f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram(program);
-        glBindVertexArray(vao[0]);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-
-        glUseProgram(program2);
-        glBindVertexArray(vao[1]);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glBindVertexArray(vao);
+        glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices)/sizeof(GLfloat)/3);
         glBindVertexArray(0);
 
         // Finish rendering
@@ -220,8 +170,7 @@ int main()
         showFPS(window, lastTime, frame);
     }
 
-    glDeleteBuffers(2, vbo);
-    glDeleteBuffers(2, vao);
+    glDeleteBuffers(1, &vbo);
     glfwTerminate();
     return 0;
 }

@@ -1,6 +1,6 @@
-// Two vbos and vaos for seperate triangles
-// Chapter 5
+// Chapter 5, ex 5.2
 // Hello Triangle Program.
+// Now create the same 2 triangles using two different VAOs and VBOs for their data.
 
 #include "learngl.hpp"
 
