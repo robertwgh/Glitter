@@ -10,6 +10,16 @@ void key_callback(GLFWwindow * window, int key, int scancode, int action, int mo
         glfwSetWindowShouldClose(window, GL_TRUE);
 }
 
+
+
+
+void window_size_callback(GLFWwindow* window, int width, int height)
+{
+    glfwSetWindowSize(window, width, height);
+    glViewport(0, 0, width, height);
+}
+
+
 void showFPS(GLFWwindow * window, double & lastTime, int & frame)
 {
     double currentTime = glfwGetTime();
@@ -32,7 +42,7 @@ GLFWwindow * initTest(int width, int height)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+    glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     
     GLFWwindow * window = glfwCreateWindow(width, height, "Robert learns OpenGL", nullptr, nullptr);
@@ -45,6 +55,7 @@ GLFWwindow * initTest(int width, int height)
     
     glfwMakeContextCurrent(window);
     glfwSetKeyCallback(window, key_callback);
+    glfwSetWindowSizeCallback(window, window_size_callback);
     
     // Glad library init.
     if(!gladLoadGL()) {
@@ -61,79 +72,65 @@ GLFWwindow * initTest(int width, int height)
 }
 
 const GLchar * vsSource = STRINGIZE_SOURCE(
-    \#version 330 core \n
+    \#version 400 core \n
     layout(location = 0) in vec3 position;
+    layout(location = 1) in vec3 color;
+    layout(location = 2) in vec2 texCoord;
+    
+    out vec3 myColor;
+    out vec2 myTexCoord;
     void main()
     {
-        gl_Position = vec4(position.x, position.y, position.z, 1.0f);
+        gl_Position = vec4(position.xyz, 1.0f);
+        myColor = color;
+        // Solve the image up-side down issue.
+        myTexCoord = texCoord;
     }
 );
 
 const GLchar * fsSource = STRINGIZE_SOURCE(
-    \#version 330 core \n
+    \#version 400 core \n
+    in vec3 myColor;
+    in vec2 myTexCoord;
     out vec4 color;
+    uniform sampler2D sampler;
     void main()
     {
-        color = vec4(1.0f, 0.5f, 0.2f, 0.1f);
+        color = texture(sampler, vec2(myTexCoord.x, 1.0f - myTexCoord.y)) * vec4(myColor, 0.5f);
     }
 );
  
 int main()
 {
     GLFWwindow * window = initTest(800, 600);
+    ogl::Program program(vsSource, fsSource, ogl::Program::STRING_MODE);
     
-    // Compile vertex shader
-    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vsSource, NULL);
-    glCompileShader(vertexShader);
-    GLint err;
-    GLchar errLog[512];
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &err);
-    if (!err)
-    {
-            glGetShaderInfoLog(vertexShader, 512, NULL, errLog);
-            std::cout << "Vertex shader compile failed. Error log: " << errLog << std::endl;
-            return -1;
-    }
- 
-    // Compiler fragment shader
-    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fsSource, NULL);
-    glCompileShader(fragmentShader);
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &err);
-    if (!err)
-    {
-            glGetShaderInfoLog(fragmentShader, 512, NULL, errLog);
-            std::cout << "Fragment shader compile filed. Error log: " << errLog << std::endl;
-            return -1;
-    }
- 
-    // Create program
-    GLuint program = glCreateProgram();
-    glAttachShader(program, vertexShader);
-    glAttachShader(program, fragmentShader);
-    glLinkProgram(program);
-    glGetProgramiv(program, GL_LINK_STATUS, &err);
-    if (!err)
-    {
-            glGetProgramInfoLog(program, 512, NULL, errLog);
-            std::cout << "Link program failed, error log: " << errLog << std::endl;
-            return -1;
-    }
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
- 
+    // Prepare texture data
+    GLuint texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    int width, height;
+    unsigned char * image = SOIL_load_image("/home/kn/workspace/robertwgh/Glitter/image/challenger.jpg", &width, &height, 0, SOIL_LOAD_RGB);
+    if(image == NULL) { std::cout << "Failed to load image" << std::endl; return -1; }
+    std::cout << "Image loaded, size: " << width << " X " << height << std::endl;
+    // Transfer texture data to texture object.
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    SOIL_free_image_data(image);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    
     //Prepare data
     GLfloat vertices[] = {
-        -0.5f, -0.5f, 0.0f, // bottom left
-        0.5f, -0.5f, 0.0f, // bottom right
-        0.5f, 0.5f, 0.0f,  // top right
-        -0.5f, 0.5f, 0.0f // top left
+        // position             colors          tex coords
+        0.5f, 0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,// top right
+        0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   1.0f, 0.0f,// bottom right
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f,   0.0f, 0.0f,// bottom left
+        -0.5f, 0.5f, 0.0f,  1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left
     };
     
     GLuint indices [] = {
         0, 1, 2, 
-        0, 2, 3
+        2, 3, 0
     };
  
     GLuint vbo, ebo, vao;
@@ -149,16 +146,25 @@ int main()
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
         
-        GLint posAttribPtrLoc = glGetAttribLocation(program, "position");
-        glVertexAttribPointer(posAttribPtrLoc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+        GLint posAttribPtrLoc = program.getAttribLocation("position"); //glGetAttribLocation(program, "position");
+        glVertexAttribPointer(posAttribPtrLoc, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
         glEnableVertexAttribArray(posAttribPtrLoc);
+        
+        GLint colorAttribPtrLoc = program.getAttribLocation("color"); //glGetAttribLocation(program, "color");
+        glVertexAttribPointer(colorAttribPtrLoc, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(colorAttribPtrLoc);
+        
+        GLint texAttribPtrLoc = program.getAttribLocation("texCoord"); //glGetAttribLocation(program, "color");
+        glVertexAttribPointer(texAttribPtrLoc, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(texAttribPtrLoc);
+        
     }
     glBindVertexArray(0);
     
-    glUseProgram(program);
+    program.use();
     
     // Wireframe mode.
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     
     // Create a game loop.
     double lastTime = glfwGetTime();
@@ -171,16 +177,20 @@ int main()
         glClearColor(0.80f, 0.80f, 0.80f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         
+        glBindTexture(GL_TEXTURE_2D, texture);
         glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (GLvoid*)0);
         glBindVertexArray(0);
-              
+        glBindTexture(GL_TEXTURE_2D, 0);
+
         // Finish rendering
         glfwSwapBuffers(window);
         showFPS(window, lastTime, frame);
     }
     
     glDeleteBuffers(1, &vbo); 
+    glDeleteBuffers(1, &ebo);
+    glDeleteTextures(1, &texture);
     glfwTerminate();
     return 0;
 }
