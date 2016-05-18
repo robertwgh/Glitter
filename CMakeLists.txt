@@ -18,6 +18,10 @@ option(BUILD_OPENGL3_DEMOS OFF)
 option(BUILD_UNIT_TESTS OFF)
 add_subdirectory(Glitter/Vendor/bullet)
 
+
+option(BUILD_SOIL OFF)
+add_subdirectory(Glitter/Vendor/Simple-OpenGL-Image-Library)
+
 if(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
 else()
@@ -27,14 +31,14 @@ else()
     endif()
 endif()
 
-include_directories(Glitter/Headers/)
 include_directories(Glitter/Headers/
                     Glitter/Vendor/assimp/include/
                     Glitter/Vendor/bullet/src/
                     Glitter/Vendor/glad/include/
                     Glitter/Vendor/glfw/include/
                     Glitter/Vendor/glm/
-                    Glitter/Vendor/stb/)
+                    Glitter/Vendor/stb/
+                    Glitter/Vendor/Simple-OpenGL-Image-Library/src/)
 
 file(GLOB VENDORS_SOURCES Glitter/Vendor/glad/src/glad.c)
 file(GLOB PROJECT_HEADERS Glitter/Headers/*.hpp)
@@ -67,7 +71,7 @@ foreach (APP ${APP_LIST})
     add_executable(${APP} ${SOURCE_FILE} ${PROJECT_HEADERS}
                                ${PROJECT_SHADERS} ${PROJECT_CONFIGS}
                                ${VENDORS_SOURCES})
-    target_link_libraries(${APP} assimp glfw
+    target_link_libraries(${APP} assimp glfw SOIL
                             ${GLFW_LIBRARIES} ${GLAD_LIBRARIES}
                             BulletDynamics BulletCollision LinearMath)
     set_target_properties(${APP} PROPERTIES
