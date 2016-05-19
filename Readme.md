@@ -1,3 +1,18 @@
+# Description
+
+This repostory contains my solution program for learnopengl.com tutorial.I have forked Glitter as a workspace for me to learn OpenGL programming when I followed the online tutorial at learnopengl.com. I have done the following changes to make it suitable for that tutorial:
+
++ I have added support of SOIL library. To achieve this, the CMakeList.txt has been modified; the cmake module FindOpenGL.cmake needs to be changed in your system (adding the right OpenGL path in that file). Added SOIL as a sub-module. 
++ Added a utility class class Program to assist with any operation related to program, shader and so on.
++ Modified CMakeList.txt to make the compilation of new program easier. 
+
+Naming convention
+
++ code+number.cpp, which is the example code from the tutorial. For example, code5.1.cpp means the 1st example code in chapter 5.
++ ex+number.cpp, which is the solution code to the exercises in the end of each chapter. For example, ex5.1.cpp means the 1st exercise of chapter 5.
+
+---------------------------------------------------------------------------
+
 # [Glitter](http://polytonic.github.io/Glitter/)
 ![Screenshot](http://i.imgur.com/MDo2rsy.jpg)
 
