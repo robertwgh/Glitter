@@ -65,7 +65,7 @@ add_definitions(-DGLFW_INCLUDE_NONE
 # To add new tests, just add the project name here. 
 set(APP_LIST code5.1 code5.2 ex5.1 ex5.2 ex5.3 
              code6.1 code6.2 code6.3 ex6.1 ex6.2 ex6.3
-             code7.1)
+             code7.1 code8.1 code8.2)
 
 foreach (APP ${APP_LIST})
     file(GLOB SOURCE_FILE Glitter/Sources/${APP}.cpp)
