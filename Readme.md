@@ -6,10 +6,21 @@ This repostory contains my solution program for learnopengl.com tutorial.I have 
 + Added a utility class class Program to assist with any operation related to program, shader and so on.
 + Modified CMakeList.txt to make the compilation of new program easier. 
 
-Naming convention
+### Naming convention
 
 + code+number.cpp, which is the example code from the tutorial. For example, code5.1.cpp means the 1st example code in chapter 5.
 + ex+number.cpp, which is the solution code to the exercises in the end of each chapter. For example, ex5.1.cpp means the 1st exercise of chapter 5.
+
+### How to build and run
+
+In the root folder, type
+
+```bash
+mkdir build
+cd build
+cmake ..
+make
+```
 
 ---------------------------------------------------------------------------
 
