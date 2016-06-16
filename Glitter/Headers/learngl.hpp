@@ -11,5 +11,6 @@
 #include <string>
 
 #define STRINGIZE_SOURCE(...) #__VA_ARGS__
+#define SHADER_SOURCE(...) "#version 400 core\n"#__VA_ARGS__
 
 #endif

@@ -11,8 +11,6 @@ void key_callback(GLFWwindow * window, int key, int scancode, int action, int mo
 }
 
 
-
-
 void window_size_callback(GLFWwindow* window, int width, int height)
 {
     glfwSetWindowSize(window, width, height);
@@ -71,8 +69,7 @@ GLFWwindow * initTest(int width, int height)
     return window;
 }
 
-const GLchar * vsSource = STRINGIZE_SOURCE(
-    \#version 400 core \n
+const GLchar * vsSource = SHADER_SOURCE(
     layout(location = 0) in vec3 position;
     layout(location = 1) in vec3 color;
     layout(location = 2) in vec2 texCoord;
@@ -88,8 +85,7 @@ const GLchar * vsSource = STRINGIZE_SOURCE(
     }
 );
 
-const GLchar * fsSource = STRINGIZE_SOURCE(
-    \#version 400 core \n
+const GLchar * fsSource = SHADER_SOURCE(
     in vec3 myColor;
     in vec2 myTexCoord;
     out vec4 color;
@@ -117,15 +113,26 @@ int main()
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
     glGenerateMipmap(GL_TEXTURE_2D);
     SOIL_free_image_data(image);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glBindTexture(GL_TEXTURE_2D, 0);
     
     //Prepare data
+    /*
     GLfloat vertices[] = {
         // position             colors          tex coords
-        0.5f, 0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,// top right
-        0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   1.0f, 0.0f,// bottom right
+        0.5f, 0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   .01f, .01f,// top right
+        0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   .01f, 0.0f,// bottom right
         -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f,   0.0f, 0.0f,// bottom left
-        -0.5f, 0.5f, 0.0f,  1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left
+        -0.5f, 0.5f, 0.0f,  1.0f, 1.0f, 0.0f,   0.0f, .01f  // top left
+    };
+    * */
+    
+    GLfloat vertices[] = {
+        0.5f, 0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   2.0f, 2.0f,// top right
+        0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   2.0f, 0.0f,// bottom right
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f,   0.0f, 0.0f,// bottom left
+        -0.5f, 0.5f, 0.0f,  1.0f, 1.0f, 0.0f,   0.0f, 2.0f  // top left
     };
     
     GLuint indices [] = {

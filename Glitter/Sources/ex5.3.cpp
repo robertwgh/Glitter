@@ -61,8 +61,7 @@ GLFWwindow * initTest(int width, int height)
     return window;
 }
 
-const GLchar * vsSource = STRINGIZE_SOURCE(
-    \#version 330 core \n
+const GLchar * vsSource = SHADER_SOURCE(
     layout(location = 0) in vec3 position;
 void main()
 {
@@ -70,22 +69,20 @@ void main()
 }
 );
 
-const GLchar * fsSource = STRINGIZE_SOURCE(
-    \#version 330 core \n
+const GLchar * fsSource = SHADER_SOURCE(
     out vec4 color;
-void main()
-{
-    color = vec4(1.0f, 0.5f, 0.2f, 0.1f);
-}
+    void main()
+    {
+        color = vec4(1.0f, 0.5f, 0.2f, 0.1f);
+    }
 );
 
-const GLchar * fsSource2 = STRINGIZE_SOURCE(
-    \#version 330 core \n
+const GLchar * fsSource2 = SHADER_SOURCE(
     out vec4 color;
-void main()
-{
-    color = vec4(1.0f, 1.0f, 0.0f, 0.1f);
-}
+    void main()
+    {
+        color = vec4(1.0f, 1.0f, 0.0f, 0.1f);
+    }
 );
 
 int main()
