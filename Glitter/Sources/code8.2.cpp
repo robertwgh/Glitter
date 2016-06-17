@@ -123,12 +123,12 @@ int main()
     
     //Prepare data    
     GLfloat vertices[] = {
-        // Top plane
+        // front plane
         0.5f, 0.5f, 0.5f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,// top right
         0.5f, -0.5f, 0.5f,  0.0f, 1.0f, 0.0f,   1.0f, 0.0f,// bottom right
         -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,   0.0f, 0.0f,// bottom left
         -0.5f, 0.5f, 0.5f,  1.0f, 1.0f, 0.0f,   0.0f, 1.0f,  // top left
-        // Bottom plane
+        // back plane
         0.5f, 0.5f, -0.5f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,// top right
         0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,   1.0f, 0.0f,// bottom right
         -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 1.0f,   0.0f, 0.0f,// bottom left
@@ -150,44 +150,35 @@ int main()
     
     GLuint indices [] = {
         // top
-        2, 1, 0, 
-        0, 3, 2,
+        4, 0, 3, 
+        3, 7, 4,
         // bottom
-        4, 5, 6, 
-        6, 7, 4,
+        5, 1, 2,
+        2, 6, 5, 
         // front
-        1, 5, 6,
-        6, 2, 1,
+        0, 1, 2,
+        2, 3, 0,
         // back
-        0, 4, 7, 
-        7, 3, 0,
+        4, 5, 6,
+        6, 7, 4,
         // left
         3, 2, 6, 
         6, 7, 3,
         // right
-        1, 0, 4,
-        4, 5, 1
+        4, 5, 1,
+        1, 0, 4
     };
-    
-    /*
-     *  1.0f, 1.0f,
-        1.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 1.0f,
-        1.0f, 1.0f,
-        * */
-        
+
     GLfloat texCoords [] = {
         // top
-        0.0f, 0.0f,
+        1.0f, 1.0f,
         1.0f, 0.0f,
-        1.0f, 1.0f,
-        1.0f, 1.0f,
-        0.0f, 1.0f,
         0.0f, 0.0f,
+        0.0f, 0.0f,
+        0.0f, 1.0f,
+        1.0f, 1.0f,
         // bottom
-         0.0f, 0.0f,
+        0.0f, 0.0f,
         0.0f, 0.0f,
         0.0f, 0.0f,
         0.0f, 0.0f,
@@ -201,21 +192,21 @@ int main()
         0.0f, 0.0f,
         0.0f, 0.0f,
         // back
-         0.0f, 0.0f,
+        0.0f, 0.0f,
         0.0f, 0.0f,
         0.0f, 0.0f,
         0.0f, 0.0f,
         0.0f, 0.0f,
         0.0f, 0.0f,
         // left
-         0.0f, 0.0f,
+        0.0f, 0.0f,
         0.0f, 0.0f,
         0.0f, 0.0f,
         0.0f, 0.0f,
         0.0f, 0.0f,
         0.0f, 0.0f,
         // right
-         0.0f, 0.0f,
+        0.0f, 0.0f,
         0.0f, 0.0f,
         0.0f, 0.0f,
         0.0f, 0.0f,
@@ -277,8 +268,8 @@ int main()
         // This uniform should be defined here. Not outside the loop.
         // Define my transform matrix.
         glm::mat4 model, view, projection;
-        //model = glm::rotate(model, -90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-        model = glm::rotate(model, (GLfloat)glfwGetTime() * 0.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+        //model = glm::rotate(model, 0.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+        model = glm::rotate(model, (GLfloat)glfwGetTime() * 1.0f, glm::vec3(1.0f, 1.0f, 1.0f));
         //transform = glm::scale(transform, glm::vec3(0.5f, 0.5f, 0.5f));
         view = glm::translate(view, glm::vec3(0.0f, 0.0f, -2.0f));
         projection = glm::perspective(45.0f, 800.0f/600, 0.1f, 100.0f);

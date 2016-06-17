@@ -1,6 +1,8 @@
 # Description
 
-This repostory contains my solution program for [learnopengl.com](learnopengl.com) tutorial.I have forked Glitter as a workspace for me to learn OpenGL programming when I followed the online tutorial at learnopengl.com. I have done the following changes to make it suitable for that tutorial:
+By robertwgh
+
+This repostory contains my solution program for [learnopengl.com](learnopengl.com) tutorial. I have forked Glitter as a workspace for me to learn OpenGL programming when I followed the online tutorial at [learnopengl.com](learnopengl.com). I have done the following changes to make it suitable for that tutorial:
 
 + I have added support of SOIL library. To achieve this, the `CMakeList.txt` has been modified; the cmake module FindOpenGL.cmake needs to be changed in your system (adding the right OpenGL path in that file). Added SOIL as a sub-module. 
 + Added a utility class class Program to assist with any operation related to program, shader and so on.
