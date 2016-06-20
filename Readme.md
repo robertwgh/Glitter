@@ -7,6 +7,7 @@ This repostory contains my solution program for [learnopengl.com](learnopengl.co
 + I have added support of SOIL library. To achieve this, the `CMakeList.txt` has been modified; the cmake module FindOpenGL.cmake needs to be changed in your system (adding the right OpenGL path in that file). Added SOIL as a sub-module. 
 + Added a utility class class Program to assist with any operation related to program, shader and so on.
 + Modified CMakeList.txt to make the compilation of new program easier. 
++ Have tested under Ubuntu 14.04 and Windows 7 (VS 2015).
 
 ### Naming convention
 
