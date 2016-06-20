@@ -3,6 +3,7 @@
 // Texture. Start to learn to use texture.
 
 #include "learngl.hpp"
+#include "learngl_util.hpp"
 
 void key_callback(GLFWwindow * window, int key, int scancode, int action, int mode)
 {
@@ -109,7 +110,8 @@ int main()
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
     int width, height;
-    unsigned char * image = SOIL_load_image("/home/kn/workspace/robertwgh/Glitter/image/challenger.jpg", &width, &height, 0, SOIL_LOAD_RGB);
+    std::string file_path = get_exe_dir() + "/challenger.jpg";
+    unsigned char * image = SOIL_load_image(file_path.c_str(), &width, &height, 0, SOIL_LOAD_RGB);
     if(image == NULL) { std::cout << "Failed to load image" << std::endl; return -1; }
     std::cout << "Image loaded, size: " << width << " X " << height << std::endl;
     

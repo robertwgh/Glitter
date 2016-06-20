@@ -221,9 +221,9 @@ int main()
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
     int imgw, imgh;
-    std::string file_path = get_exe_dir() + "/../../image/challenger.jpg";
+    std::string file_path = get_exe_dir() + "/challenger.jpg";
     unsigned char * image = SOIL_load_image(file_path.c_str(), &imgw, &imgh, 0, SOIL_LOAD_RGB);
-    if(image == NULL) { std::cout << "Failed to load image" << std::endl; return -1; }
+    if(image == NULL) { std::cout << "Failed to load image from " << file_path << std::endl; return -1; }
     std::cout << "Image loaded, size: " << imgw << " X " << imgh << std::endl;
     
     // Transfer texture data to texture object.

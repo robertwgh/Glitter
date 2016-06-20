@@ -2,7 +2,7 @@
 #define LEARNGL_UTIL_HPP
 
 #include <stdio.h>  /* defines FILENAME_MAX */
-#ifdef WINDOWS
+#ifdef _WIN32
     #include <windows.h>
     #include <direct.h>
     #define GetCurrentDir _getcwd
@@ -33,7 +33,7 @@ std::string get_exe_path()
 {
   char result[1024];
   
-#ifdef WINDOWS
+#ifdef _WIN32
   return std::string( result, GetModuleFileName( NULL, result, 1024 ) );
 #else
   ssize_t count = readlink( "/proc/self/exe", result, 1024 );
@@ -44,7 +44,12 @@ std::string get_exe_path()
 std::string get_exe_dir()
 {
     std::string path = get_exe_path();
+
+#ifdef _WIN32
+    return path.substr(0, path.rfind('\\'));
+#else
     return path.substr(0, path.rfind('/'));
+#endif
 }
 
 
