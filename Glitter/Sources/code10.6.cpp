@@ -5,12 +5,14 @@
 // Using delta time to control the camera speed.
 // Add mouse movement control.
 
+#include <string>
 #include "learngl.hpp"
+#include "learngl_util.hpp"
 
 #define NUM_CUBE    3000
 #define WIDTH 2560
 #define HEIGHT 1440
-#define FULL_SCREEN 1
+#define FULL_SCREEN 0
 
 bool keys[1024];
 float deltaTime = 0.0f;
@@ -219,7 +221,8 @@ int main()
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
     int imgw, imgh;
-    unsigned char * image = SOIL_load_image("/home/kn/workspace/robertwgh/Glitter/image/challenger.jpg", &imgw, &imgh, 0, SOIL_LOAD_RGB);
+    std::string file_path = get_exe_dir() + "/../../image/challenger.jpg";
+    unsigned char * image = SOIL_load_image(file_path.c_str(), &imgw, &imgh, 0, SOIL_LOAD_RGB);
     if(image == NULL) { std::cout << "Failed to load image" << std::endl; return -1; }
     std::cout << "Image loaded, size: " << imgw << " X " << imgh << std::endl;
     
