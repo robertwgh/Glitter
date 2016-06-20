@@ -1,6 +1,5 @@
-// Chapter 8
-// Element buffer objects
-// Texture. Start to learn to use texture.
+// Chapter 9
+// Draw a rotating cube. with prospective projection.
 
 #include "learngl.hpp"
 
@@ -95,7 +94,7 @@ const GLchar * fsSource = SHADER_SOURCE(
     void main()
     {
         // Solve the image up-side down issue.
-        color = texture(sampler, vec2(myTexCoord.x, 1.0f - myTexCoord.y)) * vec4(myColor, 0.5f);
+        color = texture(sampler, vec2(myTexCoord.x, 1.0f - myTexCoord.y));// * vec4(myColor, 0.5f);
     }
 );
  
@@ -121,56 +120,86 @@ int main()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glBindTexture(GL_TEXTURE_2D, 0);
     
-    //Prepare data
-    /*
+    
+    // This is my cube.
+    /* 
+     *   _________
+     *  /________/|
+     * |        | |
+     * |        | |
+     * |        | |
+     * |________|/  
+     * 
+     */
+     
+    //Prepare data    
     GLfloat vertices[] = {
-        // position             colors          tex coords
-        0.5f, 0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   .01f, .01f,// top right
-        0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   .01f, 0.0f,// bottom right
-        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f,   0.0f, 0.0f,// bottom left
-        -0.5f, 0.5f, 0.0f,  1.0f, 1.0f, 0.0f,   0.0f, .01f  // top left
+        // front plane
+        0.5f, 0.5f, 0.5f,       1.0f, 1.0f,
+        0.5f, -0.5f, 0.5f,      1.0f, 0.0f,
+        -0.5f, -0.5f, 0.5f,     0.0f, 0.0f,
+        -0.5f, -0.5f, 0.5f,     0.0f, 0.0f,
+        -0.5f, 0.5f, 0.5f,      0.0f, 1.0f,
+        0.5f, 0.5f, 0.5f,       1.0f, 1.0f,
+        // back plane
+        0.5f, 0.5f, -0.5f,      1.0f, 0.0f,
+        0.5f, -0.5f, -0.5f,     1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,    0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,    0.0f, 1.0f,
+        -0.5f, 0.5f, -0.5f,     0.0f, 0.0f,
+        0.5f, 0.5f, -0.5f,      1.0f, 0.0f,
+        // top
+        0.5f, 0.5f, -0.5f,      1.0f, 1.0f,
+        0.5f, 0.5f, 0.5f,       1.0f, 0.0f,
+        -0.5f, 0.5f, 0.5f,      0.0f, 0.0f,
+        -0.5f, 0.5f, 0.5f,      0.0f, 0.0f,
+        -0.5f, 0.5f, -0.5f,     0.0f, 1.0f,
+        0.5f, 0.5f, -0.5f,      1.0f, 1.0f,
+        // bottom
+        0.5f, -0.5f, -0.5f,     1.0f, 0.0f,
+        0.5f, -0.5f, 0.5f,      1.0f, 1.0f,
+        -0.5f, -0.5f, 0.5f,     0.0f, 1.0f,
+        -0.5f, -0.5f, 0.5f,     0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,    0.0f, 0.0f,
+        0.5f, -0.5f, -0.5f,     1.0f, 0.0f,
+        // left
+        -0.5f, 0.5f, 0.5f,      1.0f, 1.0f,
+        -0.5f, -0.5f, 0.5f,     1.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,    0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,    0.0f, 0.0f,
+        -0.5f, 0.5f, -0.5f,     0.0f, 1.0f,
+        -0.5f, 0.5f, 0.5f,      1.0f, 1.0f,
+        
+        // right
+        0.5f, 0.5f, -0.5f,      1.0f, 1.0f,
+        0.5f, -0.5f, -0.5f,     1.0f, 0.0f,
+        0.5f, -0.5f, 0.5f,      0.0f, 0.0f,
+        0.5f, -0.5f, 0.5f,      0.0f, 0.0f,
+        0.5f, 0.5f, 0.5f,       0.0f, 1.0f,
+        0.5f, 0.5f, -0.5f,      1.0f, 1.0f
     };
-    * */
     
-    GLfloat vertices[] = {
-        0.5f, 0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,// top right
-        0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   1.0f, 0.0f,// bottom right
-        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f,   0.0f, 0.0f,// bottom left
-        -0.5f, 0.5f, 0.0f,  1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left
-    };
-    
-    GLuint indices [] = {
-        0, 1, 2, 
-        2, 3, 0
-    };
-    
-
     // Define VBO, EBO and VAO.
     GLuint vbo, ebo, vao;
     glGenVertexArrays(1, &vao);
     glGenBuffers(1, &vbo);
     glGenBuffers(1, &ebo);
- 
+    
+    GLuint vbo_tex_coords;
+    glGenBuffers(1, &vbo_tex_coords);
+    
     glBindVertexArray(vao);
     {
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
         
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-        
-        GLint posAttribPtrLoc = program.getAttribLocation("position"); //glGetAttribLocation(program, "position");
-        glVertexAttribPointer(posAttribPtrLoc, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
+        GLint posAttribPtrLoc = program.getAttribLocation("position"); 
+        glVertexAttribPointer(posAttribPtrLoc, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
         glEnableVertexAttribArray(posAttribPtrLoc);
         
-        GLint colorAttribPtrLoc = program.getAttribLocation("color"); //glGetAttribLocation(program, "color");
-        glVertexAttribPointer(colorAttribPtrLoc, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-        glEnableVertexAttribArray(colorAttribPtrLoc);
-        
-        GLint texAttribPtrLoc = program.getAttribLocation("texCoord"); //glGetAttribLocation(program, "color");
-        glVertexAttribPointer(texAttribPtrLoc, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+        GLint texAttribPtrLoc = program.getAttribLocation("texCoord");
+        glVertexAttribPointer(texAttribPtrLoc, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
         glEnableVertexAttribArray(texAttribPtrLoc);
-        
     }
     glBindVertexArray(0);
     
@@ -182,29 +211,32 @@ int main()
     // Create a game loop.
     double lastTime = glfwGetTime();
     int frame = 0;
+    
+    float fov = 45.0f;
     while(!glfwWindowShouldClose(window))
-    {
+    {        
         glfwPollEvents();
         
         // Rendering
+        glEnable(GL_DEPTH_TEST);
         glClearColor(0.80f, 0.80f, 0.80f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         // This uniform should be defined here. Not outside the loop.
         // Define my transform matrix.
         glm::mat4 model, view, projection;
-        model = glm::rotate(model, 45.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-        model = glm::rotate(model, (GLfloat)glfwGetTime() * 1.0f, glm::vec3(0.8f, 0.5f, 1.0f));
+        model = glm::rotate(model, (GLfloat)glfwGetTime() * 1.0f, glm::vec3(1.0f, 0.8f, 0.5f));
         //transform = glm::scale(transform, glm::vec3(0.5f, 0.5f, 0.5f));
         view = glm::translate(view, glm::vec3(0.0f, 0.0f, -2.0f));
-        projection = glm::perspective(glm::radians(45.0f), 800.0f/600, 0.1f, 100.0f);
+        projection = glm::perspective(glm::radians(fov), 800.0f/600.0f, 0.1f, 10.0f);
         glm::mat4 transform = projection * view * model;
         GLuint transformLoc = program.getUniformLocation("transform");
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
         
         glBindTexture(GL_TEXTURE_2D, texture);
         glBindVertexArray(vao);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (GLvoid*)0);
+        //glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (GLvoid*)0);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
         glBindTexture(GL_TEXTURE_2D, 0);
 

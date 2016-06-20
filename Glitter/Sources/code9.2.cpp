@@ -1,6 +1,6 @@
-// Chapter 7
-// Element buffer objects
-// Texture. Start to learn to use texture.
+// Chapter 9, code2
+// Draw cubes with orthgraphic projection.
+
 
 #include "learngl.hpp"
 
@@ -121,100 +121,65 @@ int main()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glBindTexture(GL_TEXTURE_2D, 0);
     
-    //Prepare data    
-    GLfloat vertices[] = {
-        // front plane
-        0.5f, 0.5f, 0.5f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,// top right
-        0.5f, -0.5f, 0.5f,  0.0f, 1.0f, 0.0f,   1.0f, 0.0f,// bottom right
-        -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,   0.0f, 0.0f,// bottom left
-        -0.5f, 0.5f, 0.5f,  1.0f, 1.0f, 0.0f,   0.0f, 1.0f,  // top left
-        // back plane
-        0.5f, 0.5f, -0.5f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,// top right
-        0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,   1.0f, 0.0f,// bottom right
-        -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 1.0f,   0.0f, 0.0f,// bottom left
-        -0.5f, 0.5f, -0.5f,  1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left
-    };
     
     // This is my cube.
-    /*    7       4
-     * 3        0
+    /* 
      *   _________
      *  /________/|
      * |        | |
      * |        | |
      * |        | |
      * |________|/  
-     *   6        5
-     * 2        1  
+     * 
      */
-    
-    GLuint indices [] = {
+     
+    //Prepare data    
+    GLfloat vertices[] = {
+        // front plane
+        0.5f, 0.5f, 0.5f,       1.0f, 1.0f,
+        0.5f, -0.5f, 0.5f,      1.0f, 0.0f,
+        -0.5f, -0.5f, 0.5f,     0.0f, 0.0f,
+        -0.5f, -0.5f, 0.5f,     0.0f, 0.0f,
+        -0.5f, 0.5f, 0.5f,      0.0f, 1.0f,
+        0.5f, 0.5f, 0.5f,       1.0f, 1.0f,
+        // back plane
+        0.5f, 0.5f, -0.5f,      1.0f, 0.0f,
+        0.5f, -0.5f, -0.5f,     1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,    0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,    0.0f, 1.0f,
+        -0.5f, 0.5f, -0.5f,     0.0f, 0.0f,
+        0.5f, 0.5f, -0.5f,      1.0f, 0.0f,
         // top
-        4, 0, 3, 
-        3, 7, 4,
+        0.5f, 0.5f, -0.5f,      1.0f, 1.0f,
+        0.5f, 0.5f, 0.5f,       1.0f, 0.0f,
+        -0.5f, 0.5f, 0.5f,      0.0f, 0.0f,
+        -0.5f, 0.5f, 0.5f,      0.0f, 0.0f,
+        -0.5f, 0.5f, -0.5f,     0.0f, 1.0f,
+        0.5f, 0.5f, -0.5f,      1.0f, 1.0f,
         // bottom
-        5, 1, 2,
-        2, 6, 5, 
-        // front
-        0, 1, 2,
-        2, 3, 0,
-        // back
-        4, 5, 6,
-        6, 7, 4,
+        0.5f, -0.5f, -0.5f,     1.0f, 0.0f,
+        0.5f, -0.5f, 0.5f,      1.0f, 1.0f,
+        -0.5f, -0.5f, 0.5f,     0.0f, 1.0f,
+        -0.5f, -0.5f, 0.5f,     0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,    0.0f, 0.0f,
+        0.5f, -0.5f, -0.5f,     1.0f, 0.0f,
         // left
-        3, 2, 6, 
-        6, 7, 3,
+        -0.5f, 0.5f, 0.5f,      1.0f, 1.0f,
+        -0.5f, -0.5f, 0.5f,     1.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,    0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,    0.0f, 0.0f,
+        -0.5f, 0.5f, -0.5f,     0.0f, 1.0f,
+        -0.5f, 0.5f, 0.5f,      1.0f, 1.0f,
+        
         // right
-        4, 5, 1,
-        1, 0, 4
-    };
-
-    GLfloat texCoords [] = {
-        // top
-        1.0f, 1.0f,
-        1.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 1.0f,
-        1.0f, 1.0f,
-        // bottom
-        0.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 0.0f,
-        // front
-        0.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 0.0f,
-        // back
-        0.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 0.0f,
-        // left
-        0.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 0.0f,
-        // right
-        0.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 0.0f
+        0.5f, 0.5f, -0.5f,      1.0f, 1.0f,
+        0.5f, -0.5f, -0.5f,     1.0f, 0.0f,
+        0.5f, -0.5f, 0.5f,      0.0f, 0.0f,
+        0.5f, -0.5f, 0.5f,      0.0f, 0.0f,
+        0.5f, 0.5f, 0.5f,       0.0f, 1.0f,
+        0.5f, 0.5f, -0.5f,      1.0f, 1.0f
     };
     
-
     // Define VBO, EBO and VAO.
     GLuint vbo, ebo, vao;
     glGenVertexArrays(1, &vao);
@@ -229,21 +194,12 @@ int main()
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
         
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-        
-        GLint posAttribPtrLoc = program.getAttribLocation("position"); //glGetAttribLocation(program, "position");
-        glVertexAttribPointer(posAttribPtrLoc, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
+        GLint posAttribPtrLoc = program.getAttribLocation("position"); 
+        glVertexAttribPointer(posAttribPtrLoc, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
         glEnableVertexAttribArray(posAttribPtrLoc);
         
-        GLint colorAttribPtrLoc = program.getAttribLocation("color"); //glGetAttribLocation(program, "color");
-        glVertexAttribPointer(colorAttribPtrLoc, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-        glEnableVertexAttribArray(colorAttribPtrLoc);
-        
-        glBindBuffer(GL_ARRAY_BUFFER, vbo_tex_coords);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(texCoords), texCoords, GL_STATIC_DRAW);
-        GLint texAttribPtrLoc = program.getAttribLocation("texCoord"); //glGetAttribLocation(program, "color");
-        glVertexAttribPointer(texAttribPtrLoc, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
+        GLint texAttribPtrLoc = program.getAttribLocation("texCoord");
+        glVertexAttribPointer(texAttribPtrLoc, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
         glEnableVertexAttribArray(texAttribPtrLoc);
     }
     glBindVertexArray(0);
@@ -268,18 +224,20 @@ int main()
         // This uniform should be defined here. Not outside the loop.
         // Define my transform matrix.
         glm::mat4 model, view, projection;
-        //model = glm::rotate(model, 0.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-        model = glm::rotate(model, (GLfloat)glfwGetTime() * 1.0f, glm::vec3(1.0f, 1.0f, 1.0f));
-        //transform = glm::scale(transform, glm::vec3(0.5f, 0.5f, 0.5f));
-        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -2.0f));
-        projection = glm::perspective(45.0f, 800.0f/600, 0.1f, 100.0f);
+        model = glm::rotate(model, (GLfloat)glfwGetTime() * 1.0f, glm::vec3(1.0f, 0.8f, 0.5f));
+        float scale = 300.0f;
+        model = glm::scale(model, glm::vec3(scale, scale, scale));
+        view = glm::translate(view, glm::vec3(400.0f, 300.0f, 0.0f));
+        //projection = glm::perspective(glm::radians(45.0f), 800.0f/600, 0.1f, 100.0f);
+        projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f, -400.0f, 400.0f);
         glm::mat4 transform = projection * view * model;
         GLuint transformLoc = program.getUniformLocation("transform");
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
         
         glBindTexture(GL_TEXTURE_2D, texture);
         glBindVertexArray(vao);
-        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (GLvoid*)0);
+        //glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (GLvoid*)0);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
         glBindTexture(GL_TEXTURE_2D, 0);
 
